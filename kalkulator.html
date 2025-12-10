@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kalkulator Kece + Nyinyir</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #2c3e50, #1a1a2e);
+      overflow: hidden;
+    }
+
+    .calculator {
+      background: #1e1e2e;
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      width: 320px;
+      animation: fadeIn 0.8s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .display {
+      background: #2d2d44;
+      color: #fff;
+      font-size: 1.6rem;
+      text-align: right;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      overflow: hidden;
+      word-wrap: break-word;
+      min-height: 80px;
+      animation: pulse 1.5s infinite alternate;
+    }
+
+    @keyframes pulse {
+      from { box-shadow: 0 0 5px rgba(255, 255, 255, 0.2); }
+      to { box-shadow: 0 0 15px rgba(255, 107, 107, 0.7); }
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    button {
+      background: #3a3a5a;
+      color: white;
+      border: none;
+      padding: 18px 0;
+      font-size: 1.3rem;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      outline: none;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    button:hover {
+      background: #4a4a7a;
+      transform: translateY(-2px);
+    }
+
+    button:active {
+      transform: scale(0.95);
+      background: #5a5a9a;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .operator {
+      background: #5d5dc5;
+    }
+
+    .operator:hover {
+      background: #6d6dd5;
+    }
+
+    .equals {
+      background: #ff6b6b;
+      grid-column: span 2;
+    }
+
+    .equals:hover {
+      background: #ff7b7b;
+    }
+
+    .clear {
+      background: #ff9f43;
+    }
+
+    .clear:hover {
+      background: #ffa953;
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator">
+    <div class="display" id="display">0</div>
+    <div class="buttons">
+      <button class="clear" onclick="clearDisplay()">C</button>
+      <button onclick="appendToDisplay('/')" class="operator">÷</button>
+      <button onclick="appendToDisplay('*')" class="operator">×</button>
+      <button onclick="appendToDisplay('-')" class="operator">−</button>
+
+      <button onclick="appendToDisplay('7')">7</button>
+      <button onclick="appendToDisplay('8')">8</button>
+      <button onclick="appendToDisplay('9')">9</button>
+      <button onclick="appendToDisplay('+')" class="operator">+</button>
+
+      <button onclick="appendToDisplay('4')">4</button>
+      <button onclick="appendToDisplay('5')">5</button>
+      <button onclick="appendToDisplay('6')">6</button>
+      
+      <button onclick="appendToDisplay('1')">1</button>
+      <button onclick="appendToDisplay('2')">2</button>
+      <button onclick="appendToDisplay('3')">3</button>
+      <button onclick="calculate()" class="equals">=</button>
+
+      <button onclick="appendToDisplay('0')">0</button>
+      <button onclick="appendToDisplay('.')">.</button>
+    </div>
+  </div>
+
+  <script>
+    let display = document.getElementById('display');
+
+    function appendToDisplay(value) {
+      const current = display.innerText;
+      if (current === '0' && value !== '.') {
+        display.innerText = value;
+      } else if (current === 'mukalu jelek kayak lumpur' || current === 'gitu doank masak gak bisa') {
+        display.innerText = value;
+      } else {
+        display.innerText += value;
+      }
+      animateDisplay();
+    }
+
+    function clearDisplay() {
+      display.innerText = '0';
+      animateDisplay();
+    }
+
+    function calculate() {
+      const rawInput = display.innerText.trim();
+
+      // Cek khusus: apakah inputnya "1+1" (boleh ada spasi, tapi kita abaikan)
+      const normalized = rawInput.replace(/\s+/g, '');
+      if (normalized === '1+1') {
+        display.innerText = 'gitu doank masak gak bisa';
+        animateDisplay();
+        return;
+      }
+
+      try {
+        let expression = rawInput
+          .replace(/×/g, '*')
+          .replace(/÷/g, '/');
+
+        if (!expression || expression.match(/[\+\-\*\/]$/)) {
+          throw new Error('Invalid');
+        }
+
+        let result = eval(expression);
+
+        if (isNaN(result) || !isFinite(result)) {
+          throw new Error('Invalid');
+        }
+
+        if (Number.isInteger(result)) {
+          display.innerText = result;
+        } else {
+          display.innerText = parseFloat(result.toFixed(10)).toString();
+        }
+      } catch (e) {
+        display.innerText = 'mukalu jelek kayak lumpur';
+      }
+      animateDisplay();
+    }
+
+    function animateDisplay() {
+      display.style.transform = 'scale(1.05)';
+      setTimeout(() => {
+        display.style.transform = 'scale(1)';
+      }, 150);
+    }
+  </script>
+</body>
+</html>
